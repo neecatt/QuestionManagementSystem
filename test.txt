@@ -1,0 +1,24 @@
+     <!-- if option value is MCQ then create boxes in order to write options -->
+                    <!-- @if ($type->name == 'MCQ') -->
+                    <!-- <div class="md-3">
+                        <label class="form-label" for="option1">Option 1</label>
+                        <input type="text" name="option1" class="form-control" id="option1" placeholder="Enter Option 1" value="{{old("option1")}}">
+                        @error('option1')
+                        <div class="alert alert-danger" role="alert">{{$message}}</div>
+                        @enderror
+                        <label class="form-label" for="option1">Option 2</label>
+                        <input type="text" name="option2" class="form-control" id="option2" placeholder="Enter Option 2" value="{{old("option2")}}">
+                        @error('option2')
+                        <div class="alert alert-danger" role="alert">{{$message}}</div>
+                        @enderror
+                        <label class="form-label" for="option1">Option 3</label>
+                        <input type="text" name="option3" class="form-control" id="option3" placeholder="Enter Option 3" value="{{old("option3")}}">
+                        @error('option3')
+                        <div class="alert alert-danger" role="alert">{{$message}}</div>
+                        @enderror
+                        <label class="form-label" for="option1">Option 4</label>
+                        <input type="text" name="option4" class="form-control" id="option4" placeholder="Enter Option 4" value="{{old("option4")}}">
+                        @error('option4')
+                        <div class="alert alert-danger" role="alert">{{$message}}</div>
+                        @enderror
+                    </div> -->
