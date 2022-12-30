@@ -28,8 +28,6 @@
                     <th>#</th>
                     <th>Question</th>
                     <th>Type</th>
-                    <th>Answer</th>
-                    <th>Feedback</th>
                     <th>Action</th>
 
 
@@ -41,8 +39,6 @@
                             <td>{{ $qst->id }}</td>
                             <td>{{ $qst->body }}</td>
                             <td>{{ $qst->type->name }}</td>
-                            <td>{{ $qst->answer }}</td>
-                            <td>{{ $qst->feedback }}</td>
                             <td>
                                 <a class="btn btn-success" href="{{url('view-question/'.$qst->id)}}">View</a>
                                 <a class="btn btn-primary" href="{{url('edit-question/'.$qst->id)}}">Edit</a>

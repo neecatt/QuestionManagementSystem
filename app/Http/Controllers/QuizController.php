@@ -172,7 +172,7 @@ class QuizController extends Controller
     {
         $question = Question::find($id);
         $question->delete();
-        return redirect('quiz')->with('success', 'Question deleted successfully');
+        return redirect('')->with('success', 'Question deleted successfully');
     }
 
     public function viewQuestion($id)
