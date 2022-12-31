@@ -1,52 +1,64 @@
 version: '3'
 services:
+
+  #PHP Service
   app:
-    container_name: app
     build:
       context: .
       dockerfile: Dockerfile
+    image: digitalocean.com/php
+    container_name: app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: /var/www
     volumes:
-      - .:/var/www/html
-      - ./storage:/var/www/html/storage
-      - ./bootstrap/cache:/var/www/html/bootstrap/cache
-    # ports:
-    #   - 80:80
-    # depends_on:
-    #   - mysql
+      - ./:/var/www
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
       - app-network
 
-  mysql:
-    image: mysql:5.7
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: db-quizapp
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+  #Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: webserver
+    restart: unless-stopped
+    tty: true
     ports:
-      - 3306:3306
+      - "80:80"
+      - "443:443"
     volumes:
-      - mysql:/var/lib/mysql
+      - ./:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
     networks:
       - app-network
 
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    environment:
-      PMA_HOST: mysql
-      MYSQL_ROOT_PASSWORD: root
+  #MySQL Service
+  db:
+    image: mysql:5.7.22
+    container_name: db
+    restart: unless-stopped
+    tty: true
     ports:
-      - 8080:80
-    # depends_on:
-    #   - mysql
-
-    networks: 
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: password
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - dbdata:/var/lib/mysql/
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
       - app-network
-    
+
+#Docker Networks
 networks:
   app-network:
     driver: bridge
-
+#Volumes
 volumes:
-  mysql:
+  dbdata:
+    driver: local
