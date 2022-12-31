@@ -1,45 +1,62 @@
-FROM php:8-apache
+FROM php:7.2-fpm
+
+# Copy composer.lock and composer.json
+COPY composer.lock composer.json /var/www/
+
+# Set working directory
+WORKDIR /var/www
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
+    build-essential \
+    mysql-client \
     libpng-dev \
-    libonig-dev \
-    libxml2-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    locales \
     zip \
-    unzip
+    jpegoptim optipng pngquant gifsicle \
+    vim \
+    unzip \
+    git \
+    nano \
+    curl
 
-# Enable PHP extensions
+# Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+# Install extensions
+RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
+RUN docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/
+RUN docker-php-ext-install gd
+FROM php:7.2-fpm
 
+# Copy composer.lock and composer.json
+COPY composer.lock composer.json /var/www/
 
+# Set working directory
+WORKDIR /var/www
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    mysql-client \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    locales \
+    zip \
+    jpegoptim optipng pngquant gifsicle \
+    vim \
+    unzip \
+    git \
+    nano \
+    curl
 
-# Copy the application code
-COPY . /var/www/html
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Set the working directory
-WORKDIR /var/www/html
-
-# Install Laravel dependencies
-RUN composer install --no-dev --optimize-autoloader
-
-# Generate an application key
-RUN php artisan key:generate
-
-# Set permissions for the storage and bootstrap/cache directories
-RUN chmod -R 775 storage bootstrap/cache
-
-RUN service apache2 restart
-
-
-# Expose port 80
-EXPOSE 80
-
-# Set the entrypoint to the Apache daemon
-# ENTRYPOINT ["apache2-foreground"]
+# Install extensions
+RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
+RUN docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/
+RUN docker-php-ext-install gd
